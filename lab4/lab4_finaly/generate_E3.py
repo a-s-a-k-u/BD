@@ -57,4 +57,5 @@ def generate_department():
         if 'conn' in locals():
             conn.close()
 
-generate_department()
+if __name__ == "__main__":
+    generate_department()

@@ -57,4 +57,5 @@ def generate_user():
         if 'conn' in locals():
             conn.close()
 
-generate_user()
+if __name__ == "__main__":
+    generate_user()

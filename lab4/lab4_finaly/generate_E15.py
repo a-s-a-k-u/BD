@@ -44,4 +44,3 @@ def generate_appointment():
         if 'conn' in locals():
             conn.close()
 
-generate_appointment()

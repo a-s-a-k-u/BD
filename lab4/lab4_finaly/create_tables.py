@@ -46,7 +46,7 @@ def create_tables():
             ОГРН VARCHAR(15) NOT NULL UNIQUE,
             Адрес TEXT NOT NULL,
             Телефон VARCHAR(20) NOT NULL,
-            Электронная_почта VARCHAR(255) NOT NULL
+            Электронная_почта VARCHAR(255) NOT NULL UNIQUE
         );
         """)
 
@@ -72,7 +72,7 @@ def create_tables():
             Код VARCHAR(50) NOT NULL UNIQUE,
             Адрес TEXT NOT NULL,
             Телефон VARCHAR(20) NOT NULL,
-            Электронная_почта VARCHAR(255) NOT NULL
+            Электронная_почта VARCHAR(255) NOT NULL UNIQUE
         );
         """)
 
@@ -87,7 +87,6 @@ def create_tables():
             Ведомство_id BIGINT NOT NULL REFERENCES Ведомство(id) ON DELETE RESTRICT ON UPDATE CASCADE
         );
         """)
-
         #E5-Регламент
         cursor.execute("""
         CREATE TABLE Регламент (
@@ -99,10 +98,9 @@ def create_tables():
             Срок_действия DATE,
             Статус VARCHAR(20) NOT NULL,
             Услуга_id BIGINT NOT NULL REFERENCES Услуга(id) ON DELETE RESTRICT ON UPDATE CASCADE,
-            UNIQUE (Наименование, Версия, Услуга_id)
+            UNIQUE (Версия, Услуга_id) 
         );
         """)
-
         #E6-Требование регламента
         cursor.execute("""
         CREATE TABLE Требование_регламента (
@@ -122,7 +120,7 @@ def create_tables():
             Номер VARCHAR(50) NOT NULL UNIQUE,
             Пользователь_id BIGINT NOT NULL REFERENCES Пользователь(id) ON DELETE RESTRICT ON UPDATE CASCADE,
             Регламент_id BIGINT NOT NULL REFERENCES Регламент(id) ON DELETE RESTRICT ON UPDATE CASCADE,
-            Дата_подачи TIMESTAMPTZ NOT NULL,
+            Дата_и_время_подачи TIMESTAMPTZ NOT NULL,
             Состав_запроса TEXT NOT NULL,
             Статус VARCHAR(30) NOT NULL
         );
@@ -146,7 +144,7 @@ def create_tables():
             id INTEGER NOT NULL,
             Документ_id BIGINT NOT NULL REFERENCES Документ_заявления(id) ON DELETE CASCADE ON UPDATE CASCADE,
             Содержимое TEXT NOT NULL,
-            Дата_создания TIMESTAMPTZ NOT NULL,
+            Дата_и_время_создания TIMESTAMPTZ NOT NULL,
             Пользователь_id BIGINT NOT NULL REFERENCES Пользователь(id) ON DELETE RESTRICT ON UPDATE CASCADE,
             PRIMARY KEY (id, Документ_id)
         );
@@ -158,7 +156,7 @@ def create_tables():
             id BIGINT PRIMARY KEY,
             Статус_из VARCHAR(30),
             Статус_в VARCHAR(30) NOT NULL,
-            Дата_события TIMESTAMPTZ NOT NULL,
+            Дата_и_время_события TIMESTAMPTZ NOT NULL,
             Срок_исполнения DATE,
             Заявление_id BIGINT NOT NULL REFERENCES Заявление(id) ON DELETE CASCADE ON UPDATE CASCADE,
             Ведомство_id BIGINT NOT NULL REFERENCES Ведомство(id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -172,7 +170,7 @@ def create_tables():
             id BIGINT PRIMARY KEY,
             Статус VARCHAR(20) NOT NULL,
             Номер VARCHAR(50) NOT NULL UNIQUE,
-            Дата_отправки TIMESTAMPTZ NOT NULL,
+            Дата_и_время_отправки TIMESTAMPTZ NOT NULL,
             Содержание TEXT NOT NULL,
             Заявление_id BIGINT NOT NULL REFERENCES Заявление(id) ON DELETE RESTRICT ON UPDATE CASCADE,
             Ведомство_инициатор_id BIGINT NOT NULL REFERENCES Ведомство(id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -186,7 +184,7 @@ def create_tables():
         CREATE TABLE Ответ_на_запрос (
             id BIGINT PRIMARY KEY,
             Статус VARCHAR(20) NOT NULL,
-            Дата_ответа TIMESTAMPTZ NOT NULL,
+            Дата_и_время_ответа TIMESTAMPTZ NOT NULL,
             Содержание TEXT NOT NULL,
             Запрос_id BIGINT NOT NULL UNIQUE REFERENCES Межвед_запрос(id) ON DELETE CASCADE ON UPDATE CASCADE,
             Ведомство_id BIGINT NOT NULL REFERENCES Ведомство(id) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -214,19 +212,19 @@ def create_tables():
             Статус VARCHAR(30) NOT NULL,
             Валюта CHAR(3) NOT NULL,
             Сумма NUMERIC(10, 2) NOT NULL CHECK (Сумма > 0),
-            Дата_платежа TIMESTAMPTZ NOT NULL,
+            Дата_и_время_платежа TIMESTAMPTZ NOT NULL,
             Способ_оплаты VARCHAR(30) NOT NULL,
             Пользователь_id BIGINT NOT NULL REFERENCES Пользователь(id) ON DELETE RESTRICT ON UPDATE CASCADE
         );
         """)
 
-        #E13__-Оплата начисления n:n
+        #E13__-Оплата начисления n:n разреш.
         cursor.execute("""
         CREATE TABLE Оплата_начисления (
             Начисление_id BIGINT NOT NULL REFERENCES Начисление(id) ON DELETE RESTRICT ON UPDATE CASCADE,
             Платёж_id BIGINT NOT NULL REFERENCES Платеж(id) ON DELETE RESTRICT ON UPDATE CASCADE,
             Сумма_оплаты NUMERIC(10, 2) NOT NULL CHECK (Сумма_оплаты > 0),
-            Дата_оплаты TIMESTAMPTZ NOT NULL,
+            Дата_и_время_оплаты TIMESTAMPTZ NOT NULL,
             Признак_закрытия BOOLEAN NOT NULL DEFAULT TRUE,
             PRIMARY KEY (Начисление_id, Платёж_id)
         );
@@ -252,7 +250,7 @@ def create_tables():
         CREATE TABLE Жалоба (
             id BIGINT PRIMARY KEY,
             Номер VARCHAR(50) NOT NULL UNIQUE,
-            Дата_подачи TIMESTAMPTZ NOT NULL,
+            Дата_и_время_подачи TIMESTAMPTZ NOT NULL,
             Содержание TEXT NOT NULL,
             Тип VARCHAR(50) NOT NULL,
             Статус VARCHAR(30) NOT NULL,
@@ -268,7 +266,7 @@ def create_tables():
             id BIGINT PRIMARY KEY,
             Вид_решения VARCHAR(50) NOT NULL,
             Решение TEXT NOT NULL,
-            Дата_решения TIMESTAMPTZ NOT NULL,
+            Дата_и_время_решения TIMESTAMPTZ NOT NULL,
             Пользователь_id BIGINT NOT NULL REFERENCES Пользователь(id) ON DELETE RESTRICT ON UPDATE CASCADE,
             Жалоба_id BIGINT NOT NULL UNIQUE REFERENCES Жалоба(id) ON DELETE CASCADE ON UPDATE CASCADE
         );
@@ -278,7 +276,7 @@ def create_tables():
         cursor.execute("""
         CREATE TABLE Журнал_аудита (
             id BIGINT PRIMARY KEY,
-            Дата_события TIMESTAMPTZ NOT NULL,
+            Дата_и_время_события TIMESTAMPTZ NOT NULL,
             Тип_действия VARCHAR(50) NOT NULL,
             Тип_сущности VARCHAR(50) NOT NULL,
             Старое_значение TEXT,

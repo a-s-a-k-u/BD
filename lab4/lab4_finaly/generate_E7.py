@@ -16,7 +16,8 @@ def generate_application():
 
         statuses = ["зарегистрировано", "на_проверке", "ожидает_оплаты", "межвед_запрос", "исполнено", "отказано"]
 
-        for i in range(1, 41):  # 40 заявлений
+        app_ids = []
+        for i in range(1, 41):
             app_number = f"APP-2026-{i:05d}"
             user_id = ((i - 1) % 50) + 1
             regulation_id = ((i - 1) % 20) + 1
@@ -24,14 +25,15 @@ def generate_application():
             request_content = f"Запрос на предоставление государственной услуги по регламенту №{regulation_id}"
             status = random.choice(statuses)
 
-            # id = i
+
             cursor.execute(
                 """
-                INSERT INTO Заявление (id, Номер, Пользователь_id, Регламент_id, Дата_подачи, Состав_запроса, Статус)
+                INSERT INTO Заявление (id, Номер, Пользователь_id, Регламент_id, Дата_и_время_подачи, Состав_запроса, Статус)
                 VALUES (%s, %s, %s, %s, %s, %s, %s);
                 """,
                 (i, app_number, user_id, regulation_id, submitted_at, request_content, status)
             )
+            app_ids.append(i)
 
         conn.commit()
 
@@ -45,4 +47,5 @@ def generate_application():
         if 'conn' in locals():
             conn.close()
 
-generate_application()
+if __name__ == "__main__":
+    generate_application()

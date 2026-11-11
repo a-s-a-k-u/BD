@@ -44,4 +44,5 @@ def generate_application_document():
         if 'conn' in locals():
             conn.close()
 
-generate_application_document()
+if __name__ == "__main__":
+    generate_application_document()

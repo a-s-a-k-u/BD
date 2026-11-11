@@ -46,4 +46,5 @@ def generate_service():
         if 'conn' in locals():
             conn.close()
 
-generate_service()
+if __name__ == "__main__":
+    generate_service()

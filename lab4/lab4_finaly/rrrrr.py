@@ -1,6 +1,6 @@
 from importlib import import_module
 
-# Импортируем функции создания таблиц и генерации сущностей из каждого файла
+
 create_tables = import_module("create_tables").create_tables
 generate_organization = import_module("generate_E2").generate_organization
 generate_user = import_module("generate_E1").generate_user
@@ -25,29 +25,36 @@ generate_audit_log = import_module("generate_E18").generate_audit_log
 
 def run_all():
 
-
     create_tables()
 
 
-    generate_organization()            # E2: Организация_заявителя
-    generate_user()                    # E1: Пользователь
-    generate_department()              # E3: Ведомство
-    generate_service()                 # E4: Услуга
-    generate_regulation()              # E5: Регламент
-    generate_regulation_requirement()  # E6: Требование_регламента
-    generate_application()             # E7: Заявление
-    generate_application_document()    # E8: Документ_заявления
-    generate_document_version()        # E9: Версия_документа
-    generate_status_event()            # E10: Событие_статуса
-    generate_interdept_request()       # E11: Межвед_запрос
-    generate_interdept_response()      # E12: Ответ_на_запрос
-    generate_accrual()                 # E13: Начисление
-    generate_payment()                 # E14: Платеж
-    generate_accrual_payment()         # E13__: Оплата_начисления
-    generate_appointment()             # E15: Запись_на_приём
-    generate_complaint()               # E16: Жалоба
-    generate_complaint_decision()      # E17: Решение_по_жалобе
-    generate_audit_log()               # E18: Журнал_аудита
+    generate_organization()            # E2
+    generate_user()                    # E1 -> E2
+    generate_department()              # E3
+    generate_service()                 # E4 -> E3
+    generate_regulation()              # E5 -> E4
+    generate_regulation_requirement()  # E6 -> E5
+
+
+    generate_application()             # E7 -> E1, E5 Заявление id=1-40
+    generate_application_document()    # E8 -> E7
+    generate_document_version()        # E9 -> E8, E1
+
+
+    generate_status_event()            # E10 -> E7, E3, E1
+    generate_interdept_request()       # E11 -> E7, E3
+    generate_interdept_response()      # E12 -> E11, E3
+    generate_accrual()                 # E13 -> E7, E3
+    generate_payment()                 # E14 -> E1
+    generate_accrual_payment()         # E13_ -> E13, E14
+
+
+    generate_appointment()             # E15 -> E1, E4, E7
+    generate_complaint()               # E16 -> E1, E3, E7
+    generate_complaint_decision()      # E17 -> E16, E1
+    generate_audit_log()               # E18
+
+
 
 
 if __name__ == "__main__":

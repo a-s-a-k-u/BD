@@ -27,7 +27,7 @@ def generate_accrual_payment():
             # PK (Начисление_id, Платёж_id)
             cursor.execute(
                 """
-                INSERT INTO Оплата_начисления (Начисление_id, Платёж_id, Сумма_оплаты, Дата_оплаты, Признак_закрытия)
+                INSERT INTO Оплата_начисления (Начисление_id, Платёж_id, Сумма_оплаты, Дата_и_время_оплаты, Признак_закрытия)
                 VALUES (%s, %s, %s, %s, %s);
                 """,
                 (accrual_id, payment_id, paid_amount, paid_at, is_closing)
@@ -45,4 +45,4 @@ def generate_accrual_payment():
         if 'conn' in locals():
             conn.close()
 
-generate_accrual_payment()
+
