@@ -43,4 +43,5 @@ def generate_regulation_requirement():
         if 'conn' in locals():
             conn.close()
 
-generate_regulation_requirement()
+if __name__ == "__main__":
+    generate_regulation_requirement()

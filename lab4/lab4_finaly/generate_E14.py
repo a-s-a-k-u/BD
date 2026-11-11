@@ -14,10 +14,10 @@ def generate_payment():
         conn = psycopg2.connect(**configure)
         cursor = conn.cursor()
 
+
         amounts = [500.00, 1500.00, 2000.00, 4000.00, 6000.00]
         methods = ["сбп", "банковская_карта", "лицевой_счет", "квитанция"]
-
-        for i in range(1, 31):  #30 платежей
+        for i in range(1, 31):
             status = "проведен"
             currency = "RUB"
             amount = random.choice(amounts)
@@ -25,14 +25,14 @@ def generate_payment():
             payment_method = random.choice(methods)
             user_id = ((i - 1) % 50) + 1
 
-            # Явно передаем id = i
             cursor.execute(
                 """
-                INSERT INTO Платеж (id, Статус, Валюта, Сумма, Дата_платежа, Способ_оплаты, Пользователь_id)
+                INSERT INTO Платеж (id, Статус, Валюта, Сумма, Дата_и_время_платежа, Способ_оплаты, Пользователь_id)
                 VALUES (%s, %s, %s, %s, %s, %s, %s);
                 """,
                 (i, status, currency, amount, payment_date, payment_method, user_id)
             )
+
 
         conn.commit()
 
@@ -46,4 +46,5 @@ def generate_payment():
         if 'conn' in locals():
             conn.close()
 
-generate_payment()
+if __name__ == "__main__":
+    generate_payment()

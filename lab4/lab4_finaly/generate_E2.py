@@ -48,4 +48,5 @@ def generate_organization():
         if 'conn' in locals():
             conn.close()
 
-generate_organization()
+if __name__ == "__main__":
+    generate_organization()

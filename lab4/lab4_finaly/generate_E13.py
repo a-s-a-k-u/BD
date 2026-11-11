@@ -17,8 +17,7 @@ def generate_accrual():
         amounts = [500.00, 1500.00, 2000.00, 4000.00, 6000.00]
         statuses = ["выставлено", "оплачено", "частично_оплачено"]
 
-
-        for i in range(1, 31):  # 30 начислений
+        for i in range(1, 31):
             currency = "RUB"
             basis = f"Госпошлина по заявлению №{i} (УИН 188100772026{i:04d})"
             amount = random.choice(amounts)
@@ -27,7 +26,6 @@ def generate_accrual():
             application_id = i
             department_id = ((i - 1) % 10) + 1
 
-            #id = i
             cursor.execute(
                 """
                 INSERT INTO Начисление (id, Валюта, Основание, Сумма, Дата_начисления, Статус, Заявление_id, Ведомство_id)
@@ -39,7 +37,7 @@ def generate_accrual():
         conn.commit()
 
     except Exception as e:
-        print(f"Error -> {e}")
+        print(f"Error in E13 -> {e}")
         if 'conn' in locals():
             conn.rollback()
     finally:
@@ -48,4 +46,5 @@ def generate_accrual():
         if 'conn' in locals():
             conn.close()
 
-generate_accrual()
+if __name__ == "__main__":
+    generate_accrual()

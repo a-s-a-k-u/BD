@@ -48,4 +48,5 @@ def generate_regulation():
         if 'conn' in locals():
             conn.close()
 
-generate_regulation()
+if __name__ == "__main__":
+    generate_regulation()
